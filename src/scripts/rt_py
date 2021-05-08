@@ -1,0 +1,26 @@
+#!/usr/bin/env python
+
+import argparse
+
+import rt_py
+
+
+def _parse_arguments():
+    parser = argparse.ArgumentParser(
+        prog='rt_py',
+        description='Python port of the book "Raytracing in one weekend"'
+    )
+
+    parser.add_argument(
+        '-o',
+        '--output',
+        help='The path for the rendered image',
+        type=str,
+        required=True,
+    )
+
+    return parser.parse_args()
+
+
+args = _parse_arguments()
+rt_py.run(image_path=args.output)
