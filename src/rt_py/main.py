@@ -12,12 +12,17 @@ def hit_sphere(center, radius, r):
     b = 2.0 * Vec3.dot(oc, r.direction)
     c = Vec3.dot(oc, oc) - (radius * radius)
     discriminant = b * b - (4 * a * c)
-    return discriminant > 0
+    if discriminant < 0:
+        return -1.0
+
+    return (-b - pow(discriminant, 0.5)) / (2.0 * a)
 
 
 def ray_color(r):
-    if hit_sphere(Point3(0, 0, -1), 0.5, r):
-        return Color(1, 0, 0)
+    t = hit_sphere(Point3(0, 0, -1), 0.5, r)
+    if t > 0.0:
+        n = Vec3.unit_vector(r.at(t) - Vec3(0, 0, -1))
+        return 0.5 * Color(n.x() + 1, n.y() + 1, n.z() + 1)
 
     unit_direction = Vec3.unit_vector(r.direction)
     t = 0.5 * (unit_direction.y() + 1.0)
