@@ -23,7 +23,7 @@ class Vec3:
 
     def __add__(self, other):
         if not isinstance(other, (int, float, self.__class__)):
-            raise NotImplementedError(f'Cannot add {type(other)} to {type(self.__class__)}')
+            raise ValueError(f'Cannot add {type(other)} to {type(self.__class__)}')
 
         if isinstance(other, (int, float)):
             e0 = self.e[0] + other
@@ -41,8 +41,7 @@ class Vec3:
 
     def __sub__(self, other):
         if not isinstance(other, (int, float, self.__class__)):
-            raise NotImplementedError(
-                f'Cannot add {type(other)} to {type(self.__class__)}')
+            raise ValueError(f'Cannot add {type(other)} to {type(self.__class__)}')
 
         if isinstance(other, (int, float)):
             e0 = self.e[0] - other
@@ -56,39 +55,27 @@ class Vec3:
         return self.__class__(e0, e1, e2)
 
     def __mul__(self, other):
-        if not isinstance(other, (int, float, self.__class__)):
-            raise NotImplementedError(
-                f'Cannot multiply {type(other)} to {type(self.__class__)}')
+        if not isinstance(other, (int, float)):
+            raise ValueError(f'Cannot multiply {type(other)} to {type(self.__class__)}')
 
-        if isinstance(other, (int, float)):
-            e0 = self.e[0] * other
-            e1 = self.e[1] * other
-            e2 = self.e[2] * other
-        else:
-            e0 = self.e[0] * other.e[0]
-            e1 = self.e[1] * other.e[1]
-            e2 = self.e[2] * other.e[2]
-
-        return self.__class__(e0, e1, e2)
+        return self.__class__(
+            self.e[0] * other,
+            self.e[1] * other,
+            self.e[2] * other,
+        )
 
     def __rmul__(self, other):
         return self * other
 
     def __truediv__(self, other):
-        if not isinstance(other, (int, float, self.__class__)):
-            raise NotImplementedError(
-                f'Cannot divide {type(other)} to {type(self.__class__)}')
+        if not isinstance(other, (int, float)):
+            raise ValueError(f'Cannot divide {type(other)} to {type(self.__class__)}')
 
-        if isinstance(other, (int, float)):
-            e0 = self.e[0] / other
-            e1 = self.e[1] / other
-            e2 = self.e[2] / other
-        else:
-            e0 = self.e[0] / other.e[0]
-            e1 = self.e[1] / other.e[1]
-            e2 = self.e[2] / other.e[2]
-
-        return self.__class__(e0, e1, e2)
+        return self.__class__(
+            self.e[0] / other,
+            self.e[1] / other,
+            self.e[2] / other,
+        )
 
     def length_squared(self):
         return (self.e[0] * self.e[0]) + (self.e[1] * self.e[1]) + (self.e[2] * self.e[2])
@@ -101,7 +88,7 @@ class Vec3:
 
     @staticmethod
     def dot(u, v):
-        return (u.e[0] * v.e[0]) + (u.e[1] * v.e[1]) + (u.e[2] + v.e[2])
+        return (u.e[0] * v.e[0]) + (u.e[1] * v.e[1]) + (u.e[2] * v.e[2])
 
     @staticmethod
     def cross(u, v):
@@ -119,26 +106,3 @@ class Vec3:
 
 Point3 = Vec3
 Color = Vec3
-
-
-if __name__ == '__main__':
-    v = Vec3(1, 3, 4)
-    print(v)
-    print(-v)
-    print(v[0])
-    v1 = Vec3(1, 2, 3)
-    v2 = Vec3(1, 1, 1)
-
-    v1 += v2
-    print(v1)
-
-    v3 = Vec3(2, 8, 18)
-    v3 *= 4
-    print(v3)
-
-    v4 = Vec3(5, 5, 5)
-    v4 /= 5
-    print(v4)
-
-    v5 = Vec3(3, 4, 5)
-    print(v5.length())
