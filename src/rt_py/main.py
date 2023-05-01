@@ -9,12 +9,19 @@ from .hittable import HitRecord
 from .hittable_list import HittableList
 from .sphere import Sphere
 from .camera import Camera
+from .ray import Ray
 
 
-def ray_color(r, world):
+def ray_color(r, world, depth):
     rec = HitRecord()
+
+    # If we've exceeded the ray bounce limit, no more light is gathered
+    if depth <= 0:
+        return Color(0, 0, 0)
+
     if world.hit(r, 0, math.inf, rec):
-        return 0.5 * (rec.normal + Color(1, 1, 1))
+        target = rec.p + rec.normal + Vec3.random_in_unit_sphere()
+        return 0.5 * ray_color(Ray(rec.p, target - rec.p), world, depth - 1)
 
     unit_direction = Vec3.unit_vector(r.direction)
     t = 0.5 * (unit_direction.y() + 1.0)
@@ -28,6 +35,7 @@ def run(image_path):
     image_width = 400
     image_height = int(image_width / aspect_ratio)
     samples_per_pixel = 100
+    max_depth = 50
 
     # World
     world = HittableList()
@@ -50,7 +58,7 @@ def run(image_path):
                 u = (i + random.random()) / (image_width - 1)
                 v = (j + random.random()) / (image_height - 1)
                 r = cam.get_ray(u, v)
-                pixel_color += ray_color(r, world)
+                pixel_color += ray_color(r, world, max_depth)
 
             image_data += write_color(pixel_color, samples_per_pixel)
 

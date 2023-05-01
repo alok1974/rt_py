@@ -1,3 +1,8 @@
+import random
+
+from .rtweekend import random_double
+
+
 class Vec3:
     def __init__(self, e0=0.0, e1=0.0, e2=0.0):
         self.e = [float(e0), float(e1), float(e2)]
@@ -102,6 +107,30 @@ class Vec3:
     @staticmethod
     def unit_vector(v):
         return v / v.length()
+
+    @classmethod
+    def random(cls):
+        return cls(
+            random.random(),
+            random.random(),
+            random.random(),
+        )
+
+    @classmethod
+    def random_min_max(cls, minimum, maximum):
+        return cls(
+            random_double(minimum, maximum),
+            random_double(minimum, maximum),
+            random_double(minimum, maximum),
+        )
+
+    @classmethod
+    def random_in_unit_sphere(cls):
+        while True:
+            p = cls.random_min_max(-1, 1)
+            if p.length_squared() >= 1:
+                continue
+            return p
 
 
 Point3 = Vec3
