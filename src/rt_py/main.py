@@ -1,32 +1,23 @@
 import sys
+import math
 
 
 from .vec3 import Color, Point3, Vec3
 from .color import write_color
 from .ray import Ray
+from .hittable import HitRecord
+from .hittable_list import HittableList
+from .sphere import Sphere
 
 
-def hit_sphere(center, radius, r):
-    oc = r.origin - center
-    a = Vec3.dot(r.direction, r.direction)
-    b = 2.0 * Vec3.dot(oc, r.direction)
-    c = Vec3.dot(oc, oc) - (radius * radius)
-    discriminant = b * b - (4 * a * c)
-    if discriminant < 0:
-        return -1.0
-
-    return (-b - pow(discriminant, 0.5)) / (2.0 * a)
-
-
-def ray_color(r):
-    t = hit_sphere(Point3(0, 0, -1), 0.5, r)
-    if t > 0.0:
-        n = Vec3.unit_vector(r.at(t) - Vec3(0, 0, -1))
-        return 0.5 * Color(n.x() + 1, n.y() + 1, n.z() + 1)
+def ray_color(r, world):
+    rec = HitRecord()
+    if world.hit(r, 0, math.inf, rec):
+        return 0.5 * (rec.normal + Color(1, 1, 1))
 
     unit_direction = Vec3.unit_vector(r.direction)
     t = 0.5 * (unit_direction.y() + 1.0)
-    return ((1.0 - t) * Color(1.0, 1.0, 1.0)) + (t * Color(0.5, 0.7, 1.0))
+    return (1.0 - t) * Color(1.0, 1.0, 1.0) + t * Color(0.5, 0.7, 1.0)
 
 
 def run(image_path):
@@ -35,6 +26,11 @@ def run(image_path):
     aspect_ratio = 16.0 / 9.0
     image_width = 400
     image_height = int(image_width / aspect_ratio)
+
+    # World
+    world = HittableList()
+    world.add(Sphere(Point3(0, 0, -1), 0.5))
+    world.add(Sphere(Point3(0, -100.5, -1), 100))
 
     # Camera
     viewport_height = 2.0
@@ -54,11 +50,8 @@ def run(image_path):
         for i in range(image_width):
             u = float(i) / (image_width - 1)
             v = float(j) / (image_height - 1)
-            r = Ray(
-                origin=origin,
-                direction=(lower_left_corner + (u * horizontal) + (v * vertical) - origin)
-            )
-            pixel_color = ray_color(r)
+            r = Ray(origin, lower_left_corner + u * horizontal + v * vertical)
+            pixel_color = ray_color(r, world)
             image_data += write_color(pixel_color)
     sys.stderr.write("\nDone.\n")
 
