@@ -1,13 +1,14 @@
 import sys
 import math
+import random
 
 
 from .vec3 import Color, Point3, Vec3
 from .color import write_color
-from .ray import Ray
 from .hittable import HitRecord
 from .hittable_list import HittableList
 from .sphere import Sphere
+from .camera import Camera
 
 
 def ray_color(r, world):
@@ -26,6 +27,7 @@ def run(image_path):
     aspect_ratio = 16.0 / 9.0
     image_width = 400
     image_height = int(image_width / aspect_ratio)
+    samples_per_pixel = 100
 
     # World
     world = HittableList()
@@ -33,26 +35,25 @@ def run(image_path):
     world.add(Sphere(Point3(0, -100.5, -1), 100))
 
     # Camera
-    viewport_height = 2.0
-    viewport_width = aspect_ratio * viewport_height
-    focal_length = 1.0
-
-    origin = Point3(0, 0, 0)
-    horizontal = Vec3(viewport_width, 0, 0)
-    vertical = Vec3(0, viewport_height, 0)
-    lower_left_corner = origin - (horizontal / 2) - (vertical / 2) - Vec3(0, 0, focal_length)
+    cam = Camera()
 
     # Render
     image_data = f'P3\n{image_width} {image_height}\n255\n'
 
     for j in range(image_height - 1, -1, -1):
         sys.stderr.write(f"\rScanlines reamining: {j} ")
+
         for i in range(image_width):
-            u = float(i) / (image_width - 1)
-            v = float(j) / (image_height - 1)
-            r = Ray(origin, lower_left_corner + u * horizontal + v * vertical)
-            pixel_color = ray_color(r, world)
-            image_data += write_color(pixel_color)
+            pixel_color = Color(0, 0, 0)
+
+            for _ in range(samples_per_pixel):
+                u = (i + random.random()) / (image_width - 1)
+                v = (j + random.random()) / (image_height - 1)
+                r = cam.get_ray(u, v)
+                pixel_color += ray_color(r, world)
+
+            image_data += write_color(pixel_color, samples_per_pixel)
+
     sys.stderr.write("\nDone.\n")
 
     with open(image_path, 'w') as fh:
