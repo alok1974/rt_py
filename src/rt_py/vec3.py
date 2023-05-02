@@ -136,6 +136,14 @@ class Vec3:
     def random_unit_vector(cls):
         return cls.unit_vector(cls.random_in_unit_sphere())
 
+    @classmethod
+    def random_in_hemisphere(cls, normal):
+        in_unit_sphere = cls.random_in_unit_sphere()
+        if cls.dot(in_unit_sphere, normal) > 0.0:
+            return in_unit_sphere
+        else:
+            return -in_unit_sphere
+
 
 Point3 = Vec3
 Color = Vec3
