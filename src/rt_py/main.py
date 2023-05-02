@@ -20,7 +20,7 @@ def ray_color(r, world, depth):
         return Color(0, 0, 0)
 
     if world.hit(r, 0, math.inf, rec):
-        target = rec.p + rec.normal + Vec3.random_in_unit_sphere()
+        target = rec.p + rec.normal + Vec3.random_unit_vector()
         return 0.5 * ray_color(Ray(rec.p, target - rec.p), world, depth - 1)
 
     unit_direction = Vec3.unit_vector(r.direction)
