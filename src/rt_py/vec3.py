@@ -132,6 +132,10 @@ class Vec3:
                 continue
             return p
 
+    @classmethod
+    def random_unit_vector(cls):
+        return cls.unit_vector(cls.random_in_unit_sphere())
+
 
 Point3 = Vec3
 Color = Vec3
