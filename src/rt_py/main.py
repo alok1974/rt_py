@@ -12,7 +12,7 @@ from .camera import Camera
 from .ray import Ray
 
 
-def ray_color(r, world, depth):
+def ray_color(r: Ray, world: HittableList, depth: int) -> Color:
     rec = HitRecord()
 
     # If we've exceeded the ray bounce limit, no more light is gathered
@@ -20,7 +20,7 @@ def ray_color(r, world, depth):
         return Color(0, 0, 0)
 
     if world.hit(r, 0, math.inf, rec):
-        target = rec.p + rec.normal + Vec3.random_unit_vector()
+        target = rec.p + Vec3.random_in_hemisphere(rec.normal)
         return 0.5 * ray_color(Ray(rec.p, target - rec.p), world, depth - 1)
 
     unit_direction = Vec3.unit_vector(r.direction)
@@ -28,8 +28,7 @@ def ray_color(r, world, depth):
     return (1.0 - t) * Color(1.0, 1.0, 1.0) + t * Color(0.5, 0.7, 1.0)
 
 
-def run(image_path):
-
+def run(image_path: str) -> None:
     # Image
     aspect_ratio = 16.0 / 9.0
     image_width = 400
@@ -46,23 +45,17 @@ def run(image_path):
     cam = Camera()
 
     # Render
-    image_data = f'P3\n{image_width} {image_height}\n255\n'
-
-    for j in range(image_height - 1, -1, -1):
-        sys.stderr.write(f"\rScanlines reamining: {j} ")
-
-        for i in range(image_width):
-            pixel_color = Color(0, 0, 0)
-
-            for _ in range(samples_per_pixel):
-                u = (i + random.random()) / (image_width - 1)
-                v = (j + random.random()) / (image_height - 1)
-                r = cam.get_ray(u, v)
-                pixel_color += ray_color(r, world, max_depth)
-
-            image_data += write_color(pixel_color, samples_per_pixel)
+    with open(image_path, 'w') as fh:
+        fh.write(f'P3\n{image_width} {image_height}\n255\n')
+        for j in reversed(range(image_height)):
+            sys.stderr.write(f"\rScanlines reamining: {j} ")
+            for i in range(image_width):
+                pixel_color = Color(0, 0, 0)
+                for _ in range(samples_per_pixel):
+                    u = (i + random.random()) / (image_width - 1)
+                    v = (j + random.random()) / (image_height - 1)
+                    r = cam.get_ray(u, v)
+                    pixel_color += ray_color(r, world, max_depth)
+                fh.write(write_color(pixel_color, samples_per_pixel))
 
     sys.stderr.write("\nDone.\n")
-
-    with open(image_path, 'w') as fh:
-        fh.write(image_data)

@@ -1,0 +1,51 @@
+#!/usr/bin/env python
+
+import argparse
+import pathlib
+import tempfile
+
+
+from rt_py import main as entrypoint
+
+
+IMAGE_FILE_NAME = 'image.ppm'
+TEMP_FILE_SUFFIX = '_rt_py'
+
+
+def _parse_arguments():
+    parser = argparse.ArgumentParser(
+        prog='render',
+        description=(
+            'Python port of the book "Raytracing in one weekend".\n'
+            'Render to the given file name.'
+        ),
+    )
+
+    parser.add_argument(
+        '-o',
+        '--output',
+        help='The path for the rendered image',
+        type=str,
+        required=True,
+    )
+
+    return parser.parse_args()
+
+
+def _convert(ppm_image, convert_to_image):
+    from PIL import Image
+    image = Image.open(ppm_image)
+    image.save(convert_to_image)
+
+
+def main():
+    args = _parse_arguments()
+
+    with tempfile.TemporaryDirectory(suffix=TEMP_FILE_SUFFIX) as temp_dir:
+        temp_file_path = pathlib.Path(temp_dir, IMAGE_FILE_NAME)
+        entrypoint.run(image_path=temp_file_path)
+        _convert(ppm_image=temp_file_path, convert_to_image=args.output)
+
+
+if __name__ == '__main__':
+    main()

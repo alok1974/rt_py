@@ -1,19 +1,20 @@
 from .hittable import Hittable, HitRecord
+from .ray import Ray
 
 
 class HittableList(Hittable):
-    def __init__(self, hittable_object=None):
+    def __init__(self, hittable_object: Hittable = None) -> None:
         self._objects = []
         if hittable_object is not None:
             self.add(hittable_object)
 
-    def clear(self):
+    def clear(self) -> None:
         self._objects.clear()
 
-    def add(self, hittable_object):
+    def add(self, hittable_object) -> None:
         self._objects.append(hittable_object)
 
-    def hit(self, r, t_min, t_max, rec):
+    def hit(self, r: Ray, t_min: float, t_max: float, rec: HitRecord) -> bool:
         temp_rec = HitRecord()
         hit_anything = False
         closest_so_far = t_max
