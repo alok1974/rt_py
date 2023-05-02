@@ -1,7 +1,8 @@
 from .rtweekend import clamp
+from .vec3 import Color
 
 
-def write_color(pixel_color, samples_per_pixel):
+def write_color(pixel_color: Color, samples_per_pixel: int) -> str:
     r = pixel_color.x()
     g = pixel_color.y()
     b = pixel_color.z()

@@ -3,7 +3,7 @@ from .ray import Ray
 
 
 class Camera:
-    def __init__(self):
+    def __init__(self) -> None:
         self.aspect_ratio = 16.0 / 9.0
         self.viewport_height = 2.0
         self.viewport_width = self.aspect_ratio * self.viewport_height
@@ -19,5 +19,5 @@ class Camera:
             - Vec3(0, 0, self.focal_length)
         )
 
-    def get_ray(self, u, v):
+    def get_ray(self, u: float, v: float) -> Ray:
         return Ray(self.origin, self.lower_left_corner + (u * self.horizontal) + (v * self.vertical) - self.origin)

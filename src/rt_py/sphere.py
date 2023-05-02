@@ -1,13 +1,14 @@
-from .hittable import Hittable
-from .vec3 import Vec3
+from .hittable import Hittable, HitRecord
+from .vec3 import Vec3, Point3
+from .ray import Ray
 
 
 class Sphere(Hittable):
-    def __init__(self, center, radius):
+    def __init__(self, center: Point3, radius: float) -> None:
         self.center = center
         self.radius = radius
 
-    def hit(self, r, t_min, t_max, rec):
+    def hit(self, r: Ray, t_min: float, t_max: float, rec: HitRecord) -> bool:
         oc = r.origin - self.center
         a = r.direction.length_squared()
         half_b = Vec3.dot(oc, r.direction)

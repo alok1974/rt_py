@@ -12,7 +12,7 @@ from .camera import Camera
 from .ray import Ray
 
 
-def ray_color(r, world, depth):
+def ray_color(r: Ray, world: HittableList, depth: int) -> Color:
     rec = HitRecord()
 
     # If we've exceeded the ray bounce limit, no more light is gathered
@@ -28,7 +28,7 @@ def ray_color(r, world, depth):
     return (1.0 - t) * Color(1.0, 1.0, 1.0) + t * Color(0.5, 0.7, 1.0)
 
 
-def run(image_path):
+def run(image_path: str) -> None:
 
     # Image
     aspect_ratio = 16.0 / 9.0
