@@ -1,7 +1,0 @@
-#! /bin/bash
-python -m pip install --upgrade pip
-python -m pip install .
-FILE=image.ppm
-rm -rf $FILE
-rt_py -o $FILE
-[ -f $FILE ] && open $FILE

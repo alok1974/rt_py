@@ -4,7 +4,7 @@ from glob import glob
 
 
 PACKAGE_NAME = 'rt_py'
-PACKAGE_VERSION = '1.0'
+PACKAGE_VERSION = '0.1.0'
 
 
 setup(
@@ -18,5 +18,6 @@ setup(
     package_dir={f'{PACKAGE_NAME}': f'src/{PACKAGE_NAME}'},
     download_url=(f'https://github.com/alok1974/chessly/archive/v{PACKAGE_VERSION}.tar.gz'),
     scripts=glob('src/scripts/*'),
+    install_requires=['Pillow >=9.5.0'],
     license='MIT',
 )
