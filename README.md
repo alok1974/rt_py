@@ -16,5 +16,5 @@ python -m pip install .
 ## Render
 
 ```bash
-render
+render -o <output image path, for example, ~/image.png>
 ```
