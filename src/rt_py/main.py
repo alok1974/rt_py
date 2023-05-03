@@ -29,7 +29,6 @@ def ray_color(r: Ray, world: HittableList, depth: int) -> Color:
 
 
 def run(image_path: str) -> None:
-
     # Image
     aspect_ratio = 16.0 / 9.0
     image_width = 400
@@ -46,23 +45,17 @@ def run(image_path: str) -> None:
     cam = Camera()
 
     # Render
-    image_data = f'P3\n{image_width} {image_height}\n255\n'
-
-    for j in range(image_height - 1, -1, -1):
-        sys.stderr.write(f"\rScanlines reamining: {j} ")
-
-        for i in range(image_width):
-            pixel_color = Color(0, 0, 0)
-
-            for _ in range(samples_per_pixel):
-                u = (i + random.random()) / (image_width - 1)
-                v = (j + random.random()) / (image_height - 1)
-                r = cam.get_ray(u, v)
-                pixel_color += ray_color(r, world, max_depth)
-
-            image_data += write_color(pixel_color, samples_per_pixel)
+    with open(image_path, 'w') as fh:
+        fh.write(f'P3\n{image_width} {image_height}\n255\n')
+        for j in reversed(range(image_height)):
+            sys.stderr.write(f"\rScanlines reamining: {j} ")
+            for i in range(image_width):
+                pixel_color = Color(0, 0, 0)
+                for _ in range(samples_per_pixel):
+                    u = (i + random.random()) / (image_width - 1)
+                    v = (j + random.random()) / (image_height - 1)
+                    r = cam.get_ray(u, v)
+                    pixel_color += ray_color(r, world, max_depth)
+                fh.write(write_color(pixel_color, samples_per_pixel))
 
     sys.stderr.write("\nDone.\n")
-
-    with open(image_path, 'w') as fh:
-        fh.write(image_data)
