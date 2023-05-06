@@ -44,8 +44,8 @@ def run(image_path: str) -> None:
 
     material_ground = Lambertian(Color(0.8, 0.8, 0.0))
     material_center = Lambertian(Color(0.7, 0.3, 0.3))
-    material_left = Metal(Color(0.8, 0.8, 0.8))
-    material_right = Metal(Color(0.8, 0.6, 0.2))
+    material_left = Metal(Color(0.8, 0.8, 0.8), 0.3)
+    material_right = Metal(Color(0.8, 0.6, 0.2), 1.0)
 
     world.add(Sphere(Point3(0.0, -100.5, -1.0), 100.0, material_ground))
     world.add(Sphere(Point3(0.0, 0.0, -1.0), 0.5, material_center))
