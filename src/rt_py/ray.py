@@ -1,3 +1,4 @@
+from decimal import Decimal
 from .vec3 import Point3, Vec3
 
 
@@ -6,5 +7,5 @@ class Ray:
         self.origin = origin
         self.direction = direction
 
-    def at(self, t: float) -> Vec3:
+    def at(self, t: Decimal) -> Vec3:
         return self.origin + t * self.direction

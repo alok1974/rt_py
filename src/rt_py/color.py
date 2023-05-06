@@ -1,3 +1,6 @@
+from decimal import Decimal
+import math
+
 from .rtweekend import clamp
 from .vec3 import Color
 
@@ -8,19 +11,16 @@ def write_color(pixel_color: Color, samples_per_pixel: int) -> str:
     b = pixel_color.z()
 
     # Divide color by number of samples and gamma-correct for gamma=2.0
-    scale = 1.0 / samples_per_pixel
+    scale = Decimal(1.0 / samples_per_pixel)
 
-    gamma = 2.0
-    r = pow(scale * r, 1/gamma)
-    g = pow(scale * g, 1/gamma)
-    b = pow(scale * b, 1/gamma)
+    gamma = Decimal(2.0)
+    r = Decimal(math.pow(scale * r, Decimal(1)/gamma))
+    g = Decimal(math.pow(scale * g, Decimal(1)/gamma))
+    b = Decimal(math.pow(scale * b, Decimal(1)/gamma))
 
     # Write the tranlates [0, 255] value of each color component
     return (
-        f'{int(256 * clamp(r, 0.0, 0.999))}'
-        ' '
-        f'{int(256 * clamp(g, 0.0, 0.999))}'
-        ' '
-        f'{int(256 * clamp(b, 0.0, 0.999))}'
-        '\n'
+        f'{int(256 * clamp(r, Decimal(0.0), Decimal(0.999)))} '
+        f'{int(256 * clamp(g, Decimal(0.0), Decimal(0.999)))} '
+        f'{int(256 * clamp(b, Decimal(0.0), Decimal(0.999)))} \n'
     )

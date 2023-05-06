@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 from typing import Tuple
+from decimal import Decimal
 
 
 from .hittable import HitRecord
@@ -28,9 +29,9 @@ class Lambertian(Material):
 
 
 class Metal:
-    def __init__(self, albedo: Color, fuzz: float) -> None:
+    def __init__(self, albedo: Color, fuzz: Decimal) -> None:
         self.albedo = albedo
-        self.fuzz = 1.0 if fuzz < 1 else fuzz
+        self.fuzz = fuzz if fuzz < Decimal(1.0) else Decimal(1.0)
 
     def scatter(self, r_in: Ray, rec: HitRecord) -> Tuple[bool, Ray, Color]:
         reflected = Vec3.reflect(
@@ -42,4 +43,4 @@ class Metal:
             reflected + self.fuzz * Vec3.random_in_unit_sphere()
         )
         attenuation = self.albedo
-        return Vec3.dot(scattered.direction, rec.normal) > 0, scattered, attenuation
+        return Vec3.dot(scattered.direction, rec.normal) > Decimal(0), scattered, attenuation

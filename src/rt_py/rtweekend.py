@@ -1,12 +1,13 @@
+from decimal import Decimal
 import random
 
 
-def random_double(minimum: float, maximum: float) -> float:
+def random_double(minimum: Decimal, maximum: Decimal) -> Decimal:
     """Returns a random real in [min, max)"""
-    return minimum + (maximum - minimum) * random.random()
+    return minimum + (maximum - minimum) * Decimal(random.random())
 
 
-def clamp(x: float, minimum: float, maximum: float) -> float:
+def clamp(x: Decimal, minimum: Decimal, maximum: Decimal) -> Decimal:
     if x < minimum:
         return minimum
 

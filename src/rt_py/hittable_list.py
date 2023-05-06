@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 from .hittable import Hittable, HitRecord
 from .ray import Ray
 
@@ -14,7 +16,7 @@ class HittableList(Hittable):
     def add(self, hittable_object) -> None:
         self._objects.append(hittable_object)
 
-    def hit(self, r: Ray, t_min: float, t_max: float, rec: HitRecord) -> bool:
+    def hit(self, r: Ray, t_min: Decimal, t_max: Decimal, rec: HitRecord) -> bool:
         temp_rec = HitRecord()
         hit_anything = False
         closest_so_far = t_max
