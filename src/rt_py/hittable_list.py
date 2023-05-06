@@ -27,5 +27,6 @@ class HittableList(Hittable):
                 rec.normal = temp_rec.normal
                 rec.t = temp_rec.t
                 rec.front_face = temp_rec.front_face
+                rec.material = temp_rec.material
 
         return hit_anything

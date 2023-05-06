@@ -10,6 +10,7 @@ from .hittable_list import HittableList
 from .sphere import Sphere
 from .camera import Camera
 from .ray import Ray
+from .material import Lambertian, Metal
 
 
 def ray_color(r: Ray, world: HittableList, depth: int) -> Color:
@@ -20,8 +21,10 @@ def ray_color(r: Ray, world: HittableList, depth: int) -> Color:
         return Color(0, 0, 0)
 
     if world.hit(r, 0, math.inf, rec):
-        target = rec.p + Vec3.random_in_hemisphere(rec.normal)
-        return 0.5 * ray_color(Ray(rec.p, target - rec.p), world, depth - 1)
+        is_scattered, scaterred, attenuation = rec.material.scatter(r, rec)
+        if is_scattered:
+            return attenuation * ray_color(scaterred, world, depth - 1)
+        return Color(0, 0, 0)
 
     unit_direction = Vec3.unit_vector(r.direction)
     t = 0.5 * (unit_direction.y() + 1.0)
@@ -38,8 +41,16 @@ def run(image_path: str) -> None:
 
     # World
     world = HittableList()
-    world.add(Sphere(Point3(0, 0, -1), 0.5))
-    world.add(Sphere(Point3(0, -100.5, -1), 100))
+
+    material_ground = Lambertian(Color(0.8, 0.8, 0.0))
+    material_center = Lambertian(Color(0.7, 0.3, 0.3))
+    material_left = Metal(Color(0.8, 0.8, 0.8))
+    material_right = Metal(Color(0.8, 0.6, 0.2))
+
+    world.add(Sphere(Point3(0.0, -100.5, -1.0), 100.0, material_ground))
+    world.add(Sphere(Point3(0.0, 0.0, -1.0), 0.5, material_center))
+    world.add(Sphere(Point3(-1.0, 0.0, -1.0), 0.5, material_left))
+    world.add(Sphere(Point3(1.0, 0.0, -1.0), 0.5, material_right))
 
     # Camera
     cam = Camera()

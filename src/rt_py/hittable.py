@@ -11,6 +11,7 @@ class HitRecord:
         self.normal = Vec3()
         self.t = 0.0
         self.front_face = False
+        self.material = None
 
     def set_face_normal(self, r: Ray, outward_normal: Vec3) -> None:
         front_face = Vec3.dot(r.direction, outward_normal) < 0

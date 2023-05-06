@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import math
 import random
 
 from .rtweekend import random_double
@@ -29,61 +30,59 @@ class Vec3:
     def __getitem__(self, key: int) -> float:
         return self.e[key]
 
-    def __add__(self, other: Vec3) -> Vec3:
-        cls = self.__class__
-        if not isinstance(other, (int, float, cls)):
-            raise ValueError(f'Cannot add {type(other)} to {type(cls)}')
-
+    def __add__(self, other: int | float | Vec3) -> Vec3:
         if isinstance(other, (int, float)):
             e0 = self.e[0] + other
             e1 = self.e[1] + other
             e2 = self.e[2] + other
-        else:
+        elif isinstance(other, Vec3):
             e0 = self.e[0] + other.e[0]
             e1 = self.e[1] + other.e[1]
             e2 = self.e[2] + other.e[2]
+        else:
+            raise ValueError(f'Cannot add {type(other)} to {type(self)}')
 
-        return cls(e0, e1, e2)
+        return self.__class__(e0, e1, e2)
 
     def __radd__(self, other: Vec3) -> Vec3:
         return self + other
 
-    def __sub__(self, other: Vec3) -> Vec3:
-        cls = self.__class__
-        if not isinstance(other, (int, float, cls)):
-            raise ValueError(f'Cannot add {type(other)} to {type(cls)}')
-
+    def __sub__(self, other: int | float | Vec3) -> Vec3:
         if isinstance(other, (int, float)):
             e0 = self.e[0] - other
             e1 = self.e[1] - other
             e2 = self.e[2] - other
-        else:
+        elif isinstance(other, Vec3):
             e0 = self.e[0] - other.e[0]
             e1 = self.e[1] - other.e[1]
             e2 = self.e[2] - other.e[2]
+        else:
+            raise ValueError(f'Cannot add {type(other)} to {self}')
 
-        return cls(e0, e1, e2)
+        return self.__class__(e0, e1, e2)
 
-    def __mul__(self, other: Vec3) -> Vec3:
-        cls = self.__class__
-        if not isinstance(other, (int, float)):
-            raise ValueError(f'Cannot multiply {type(other)} to {type(cls)}')
+    def __mul__(self, other: int | float | Vec3) -> Vec3:
+        if isinstance(other, (int, float)):
+            e0 = self.e[0] * other
+            e1 = self.e[1] * other
+            e2 = self.e[2] * other
+        elif isinstance(other, Vec3):
+            e0 = self.e[0] * other.e[0]
+            e1 = self.e[1] * other.e[1]
+            e2 = self.e[2] * other.e[2]
+        else:
+            raise ValueError(f'Cannot multiply {type(other)} to {type(self)}')
 
-        return cls(
-            self.e[0] * other,
-            self.e[1] * other,
-            self.e[2] * other,
-        )
+        return self.__class__(e0, e1, e2)
 
     def __rmul__(self, other: Vec3) -> Vec3:
         return self * other
 
     def __truediv__(self, other: float | int) -> Vec3:
-        cls = self.__class__
         if not isinstance(other, (int, float)):
-            raise ValueError(f'Cannot divide {type(other)} to {type(cls)}')
+            raise ValueError(f'Cannot divide {type(other)} to {type(self)}')
 
-        return cls(
+        return self.__class__(
             self.e[0] / other,
             self.e[1] / other,
             self.e[2] / other,
@@ -158,6 +157,18 @@ class Vec3:
             return in_unit_sphere
         else:
             return -in_unit_sphere
+
+    def near_zero(self) -> bool:
+        s = 1e-8
+        return (
+            math.fabs(self.e[0]) < s
+            and math.fabs(self.e[1]) < s
+            and math.fabs(self.e[2]) < s
+        )
+
+    @staticmethod
+    def reflect(v: Vec3, n: Vec3) -> Vec3:
+        return v - 2 * Vec3.dot(v, n) * n
 
 
 Point3 = Vec3
