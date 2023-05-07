@@ -28,7 +28,7 @@ class Lambertian(Material):
         return True, scattered, attenuation
 
 
-class Metal:
+class Metal(Material):
     def __init__(self, albedo: Color, fuzz: Decimal) -> None:
         self.albedo = albedo
         self.fuzz = fuzz if fuzz < Decimal(1.0) else Decimal(1.0)
